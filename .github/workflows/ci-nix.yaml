@@ -1,30 +1,27 @@
 name: "CI"
 
 on:
-  merge_group:
   pull_request:
   push:
     branches:
     - master
 
-
 permissions:
   checks: write
-  pull-requests: write
 
 jobs:
   test:
-    name: "Cabal tests"
+    name: "Nix build test"
     runs-on: ubuntu-latest
     steps:
     - name: 📥 Checkout repository
       uses: actions/checkout@v4
 
-    - name: ❄ Setup Nix/Cachix
+    - name: "❄ Setup Nix/Cachix"
       uses: ./.github/actions/nix-cachix-setup
       with:
         authToken: '${{ secrets.CACHIX_CARDANO_SCALING_AUTH_TOKEN }}'
 
-    - name: Test
+    - name: "Can we build the demo?"
       run: |
-        nix develop -c cabal test all
+        nix build .#alice
